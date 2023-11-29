@@ -3,8 +3,11 @@
 note.txt
 
 
+# Environments
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
