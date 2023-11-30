@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from home.models import CustomUser
 from home.serializers import *
 
-
+from rest_framework.views import APIView
+from rest_framework import viewsets
 
 @api_view(['GET', 'POST', 'PUT'])
 def index(request):
@@ -41,6 +42,48 @@ def login(request):
         return Response({'message':f'success'})
 
     return Response(serializer.errors)
+
+
+class UserAPI(APIView):
+    def get(self, request):
+        objs = CustomUser.objects.all()
+        serializer = UserSerializer(objs, many = True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    
+    def put(self, request):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors)
+    
+    def patch(self, request):
+        data = request.data
+        obj = CustomUser.objects.get(id = data['id'])
+        serializer = UserSerializer(obj, data=data, partial = True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors)
+    
+    def delete(self, request):
+        data = request.data
+        obj = CustomUser.objects.get(id = data["id"])
+        obj.delete()
+        return Response({'message':f'user {obj.name} deleted'})
+    
+
 
 @api_view(["GET","POST", 'PUT', 'PATCH', "DELETE"])
 def Person(request):
@@ -81,3 +124,8 @@ def Person(request):
         obj = CustomUser.objects.get(id = data["id"])
         obj.delete()
         return Response({'message':f'user {obj.name} deleted'})
+    
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
