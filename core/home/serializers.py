@@ -19,3 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         return data
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    

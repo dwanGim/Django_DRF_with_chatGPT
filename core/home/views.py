@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from home.models import CustomUser
-from home.serializers import UserSerializer
+from home.serializers import *
 
 
 
@@ -29,6 +29,18 @@ def index(request):
         print('풋 메서드로 접근중')
 
     return Response(courses)
+
+
+@api_view(['POST'])
+def login(request):
+    data = request.data
+    serializer = LoginSerializer(data = data)
+
+    if serializer.is_valid():
+        data = serializer.validated_data
+        return Response({'message':f'success'})
+
+    return Response(serializer.errors)
 
 @api_view(["GET","POST", 'PUT', 'PATCH', "DELETE"])
 def Person(request):
