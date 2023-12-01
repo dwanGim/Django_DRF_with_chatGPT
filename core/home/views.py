@@ -129,3 +129,12 @@ def Person(request):
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
+    
+    def list(self, request):
+        search = request.GET.get('search')
+        queryset = self.queryset
+        if search:
+            queryset = queryset.filter(name__startswith = search)
+        
+        serializer = UserSerializer(queryset, many=True)
+        return Response({'status':200, 'data':serializer.data})
